@@ -1,0 +1,46 @@
+### Users
+
+### Login, get access token
+POST http://127.0.0.1:8000/api/token/
+Accept: application/json
+
+{"username": "christianmtr", "password": "123qweqweqwe"}
+
+> {% client.global.set("auth_token", response.body.access); %}
+
+###
+
+### Add OpenAI API key
+PATCH http://127.0.0.1:8000/api/core/add_api_key/
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+{"openai_api_key": "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"}
+
+###
+
+###
+### CSV files
+###
+
+### Upload file
+POST http://127.0.0.1:8000/api/data/file/
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer {{auth_token}}
+
+--WebAppBoundary
+Content-Disposition: form-data; name="csv"; filename="test_data.csv"
+
+< ./test_data.csv
+--WebAppBoundary--
+
+> {% client.global.set("last_csv_file", response.body.id) %}
+
+###
+
+### Process file
+GET http://127.0.0.1:8000/api/data/file/{{last_csv_file}}/file_description/
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+###
